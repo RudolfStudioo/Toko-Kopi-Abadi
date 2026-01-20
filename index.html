@@ -1,257 +1,568 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Toko Kopi Abadi</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Phosphor Icons (Icon Pack Modern & Clean) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Konfigurasi Tailwind Custom -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              coffee: {
+                50: "#fdf8f6",
+                100: "#f2e8e5",
+                200: "#eaddd7",
+                300: "#e0cec7",
+                500: "#a27b5c", // Warna Brand Lama
+                800: "#2c3930", // Warna Brand Lama (Dark Green)
+                900: "#1a221d",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Custom Scrollbar agar lebih rapi */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a27b5c;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Hide number input arrows */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
-      <!-- Navbar -->
-      <div class="container-nav">
-        <div class="hamburger">
-          <div class="line"></div>
-          <div class="line"></div>
-          <div class="line"></div>
-        </div>
-        <h1 class="logo">Toko Kopi Abadi</h1>
-      </div>
+  <body
+    class="bg-coffee-50 text-slate-800 font-sans antialiased selection:bg-coffee-500 selection:text-white"
+  >
+    <!-- Navbar -->
+    <nav
+      class="fixed w-full z-50 top-0 start-0 border-b border-coffee-200/50 bg-white/80 backdrop-blur-md transition-all duration-300"
+      id="navbar"
+    >
+      <div
+        class="max-w-7xl mx-auto flex flex-wrap items-center justify-between px-6 py-4"
+      >
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group">
+          <div
+            class="bg-coffee-800 text-white p-2 rounded-lg group-hover:bg-coffee-500 transition-colors duration-300"
+          >
+            <i class="ph-fill ph-coffee-bean text-xl"></i>
+          </div>
+          <span
+            class="self-center text-xl font-bold whitespace-nowrap text-coffee-900 tracking-tight"
+            >Kopi Abadi</span
+          >
+        </a>
 
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <a href="#"><i class="fas fa-phone"></i> Contact</a>
-        <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-        <a href="#"><i class="fas fa-user"></i> About Me</a>
+        <!-- Desktop Menu -->
+        <div class="hidden md:block">
+          <ul class="flex space-x-8 font-medium text-sm text-slate-600">
+            <li>
+              <a href="#" class="hover:text-coffee-500 transition-colors"
+                >Menu</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-coffee-500 transition-colors"
+                >Tentang</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-coffee-500 transition-colors"
+                >Kontak</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cart Icon Button -->
+        <div class="flex items-center gap-3">
+          <button
+            onclick="toggleCart()"
+            class="relative p-2 text-slate-600 hover:text-coffee-800 transition-transform active:scale-95"
+          >
+            <i class="ph ph-shopping-cart text-2xl"></i>
+            <span
+              id="cart-badge"
+              class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full opacity-0 transition-opacity duration-300"
+              >0</span
+            >
+          </button>
+        </div>
       </div>
-      <div class="container-header">
-        <!-- <input
-          class="search"
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-12 px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-coffee-900 mb-4">
+        Nikmati Setiap Tegukan
+      </h1>
+      <p class="text-slate-500 max-w-xl mx-auto text-lg mb-8">
+        Pilihan biji kopi terbaik yang diseduh dengan hati untuk menemani
+        harimu.
+      </p>
+
+      <!-- Search Bar -->
+      <div class="relative max-w-md mx-auto">
+        <div
+          class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+        >
+          <i class="ph ph-magnifying-glass text-slate-400 text-xl"></i>
+        </div>
+        <input
           type="text"
-          placeholder="Cari barang kesukaanmu disini..."
-        /> -->
+          id="search-input"
+          onkeyup="filterMenu()"
+          class="block w-full p-4 ps-10 text-sm text-slate-900 border border-slate-200 rounded-full bg-white shadow-sm focus:ring-coffee-500 focus:border-coffee-500 focus:outline-none transition-shadow"
+          placeholder="Cari kopi favoritmu..."
+          required
+        />
       </div>
-      <div class="container-content">
-        <br />
-        <div class="coffee">
-          <div class="card">
-            <img src="asset/1.png" alt="" />
-            <div class="item">
-              <h1>Liberica</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Liberica')">-</button>
-              <span id="Liberica">0</span>
-              <button onclick="add('Liberica')">+</button>
-            </div>
-          </div>
+    </section>
 
-          <div class="card">
-            <img src="asset/2.png" alt="" />
-            <div class="item">
-              <h1>Robusta</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Robusta')">-</button>
-              <span id="Robusta">0</span>
-              <button onclick="add('Robusta')">+</button>
-            </div>
-          </div>
+    <!-- Menu Grid -->
+    <main class="max-w-7xl mx-auto px-6 pb-24">
+      <h2
+        class="text-2xl font-bold text-coffee-900 mb-8 border-l-4 border-coffee-500 pl-4"
+      >
+        Menu Kami
+      </h2>
 
-          <div class="card">
-            <img src="asset/3.jpg" alt="" />
-            <div class="item">
-              <h1>Arabica</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Arabica')">-</button>
-              <span id="Arabica">0</span>
-              <button onclick="add('Arabica')">+</button>
-            </div>
-          </div>
+      <div
+        id="menu-container"
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      >
+        <!-- Item kopi akan di-generate oleh JavaScript di sini -->
+      </div>
 
-          <div class="card">
-            <img src="asset/4.jpg" alt="" />
-            <div class="item">
-              <h1>Ambachino</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Ambachino')">-</button>
-              <span id="Ambachino">0</span>
-              <button onclick="add('Ambachino')">+</button>
-            </div>
-          </div>
+      <!-- Empty State (Jika pencarian tidak ditemukan) -->
+      <div id="empty-state" class="hidden text-center py-12">
+        <i class="ph ph-coffee text-6xl text-slate-300 mb-4"></i>
+        <p class="text-slate-500">Menu yang kamu cari tidak ditemukan.</p>
+      </div>
+    </main>
 
-          <div class="card">
-            <img src="asset/5.jpg" alt="" />
-            <div class="item">
-              <h1>Cold Brew</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Cold Brew')">-</button>
-              <span id="Cold Brew">0</span>
-              <button onclick="add('Cold Brew')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/6.jpg" alt="" />
-            <div class="item">
-              <h1>Affogato</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Affogato')">-</button>
-              <span id="Affogato">0</span>
-              <button onclick="add('Affogato')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/7.jpg" alt="" />
-            <div class="item">
-              <h1>Espresso</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Espresso')">-</button>
-              <span id="Espresso">0</span>
-              <button onclick="add('Espresso')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/8.jpg" alt="" />
-            <div class="item">
-              <h1>Americano</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Americano')">-</button>
-              <span id="Americano">0</span>
-              <button onclick="add('Americano')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/9.jpg" alt="" />
-            <div class="item">
-              <h1>Latte</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Latte')">-</button>
-              <span id="Latte">0</span>
-              <button onclick="add('Latte')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/10.jpg" alt="" />
-            <div class="item">
-              <h1>Cappuccino</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Cappuccino')">-</button>
-              <span id="Cappuccino">0</span>
-              <button onclick="add('Cappuccino')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/11.jpg" alt="" />
-            <div class="item">
-              <h1>Mocha</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Mocha')">-</button>
-              <span id="Mocha">0</span>
-              <button onclick="add('Mocha')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/12.jpg" alt="" />
-            <div class="item">
-              <h1>Macchiato</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Macchiato')">-</button>
-              <span id="Macchiato">0</span>
-              <button onclick="add('Macchiato')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/13.jpg" alt="" />
-            <div class="item">
-              <h1>Flat White</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Flat White')">-</button>
-              <span id="Flat White">0</span>
-              <button onclick="add('Flat White')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/14.jpg" alt="" />
-            <div class="item">
-              <h1>Ristretto</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Ristretto')">-</button>
-              <span id="Ristretto">0</span>
-              <button onclick="add('Ristretto')">+</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <img src="asset/15.jpg" alt="" />
-            <div class="item">
-              <h1>Lungo</h1>
-              <p>Rp. 10.000</p>
-              <br />
-              <button onclick="remove('Lungo')">-</button>
-              <span id="Lungo">0</span>
-              <button onclick="add('Lungo')">+</button>
-            </div>
-          </div>
+    <!-- Floating Order Button (Mobile Friendly) - MODIFIKASI SESUAI REQUEST -->
+    <!-- Tombol tetap di tengah (left-1/2 -translate-x-1/2) -->
+    <div
+      id="floating-btn"
+      class="fixed bottom-6 left-1/2 z-40 transform -translate-x-1/2 translate-y-40 transition-transform duration-500 w-auto"
+    >
+      <button
+        onclick="toggleCart()"
+        class="bg-coffee-800 hover:bg-coffee-900 text-white pl-6 pr-8 py-3 rounded-full shadow-2xl flex items-center gap-3 transition-all active:scale-95 border-2 border-coffee-200/20 backdrop-blur-sm"
+      >
+        <!-- Icon -->
+        <div class="bg-white/10 p-2 rounded-full">
+          <i class="ph-fill ph-receipt text-xl"></i>
         </div>
 
-        <div class="summary">
-          <button onclick="showPopup()">Konfirmasi Pesanan</button>
+        <!-- Teks -->
+        <div class="flex flex-col items-start text-left">
+          <!-- TULISAN "BAYAR SEKARANG" DI ATAS HARGA -->
+          <span
+            class="text-[10px] font-semibold text-coffee-200 uppercase tracking-wider leading-tight"
+            >Bayar Sekarang</span
+          >
+          <span id="floating-total" class="text-lg font-bold leading-none"
+            >Rp 0</span
+          >
         </div>
-      </div>
-    </div>
-    <div class="order-menu">
-      <div class="badge-icon" id="badgeIcon"></div>
-      <img src="image.png" alt="" />
-      <div class="order-list">
-        <span>Daftar Pesanan: </span>
-        <p class="preview">Belum ada pesanan</p>
-      </div>
+      </button>
     </div>
 
-    <div class="overlay-payment" id="payment">
-      <div class="popup-content">
-        <h2>Konfirmasi Pesanan</h2>
-        <span class="close-btn" onclick="closePopup()">&times;</span>
-        <div class="confirm-pay">
-          <br />
-          <input type="text" placeholder="Nama" id="nama" />
-          <input type="text" placeholder="Alamat" id="alamat" />
-          <p>Note: Hanya menggunakan Metode pembayaran COD</p>
-          <span>Daftar Pesanan: </span>
-          <span class="preview">Belum ada pesanan</span>
-          <br />
-          <button onclick="pay()">Buat Pesanan</button>
+    <!-- Modal Cart / Checkout -->
+    <div
+      id="cart-modal"
+      class="fixed inset-0 z-[60] hidden"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <!-- Backdrop -->
+      <div
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity opacity-0"
+        id="cart-backdrop"
+        onclick="toggleCart()"
+      ></div>
+
+      <!-- Panel -->
+      <div
+        class="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center pointer-events-none"
+      >
+        <div
+          class="relative bg-white w-full md:w-[480px] md:rounded-2xl shadow-2xl transform transition-transform translate-y-full md:translate-y-0 scale-95 opacity-0 pointer-events-auto flex flex-col max-h-[90vh]"
+          id="cart-panel"
+        >
+          <!-- Modal Header -->
+          <div
+            class="flex items-center justify-between p-5 border-b border-slate-100"
+          >
+            <h3
+              class="text-lg font-bold text-slate-800 flex items-center gap-2"
+            >
+              <i class="ph-fill ph-shopping-bag text-coffee-500"></i> Konfirmasi
+              Pesanan
+            </h3>
+            <button
+              onclick="toggleCart()"
+              class="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors"
+            >
+              <i class="ph ph-x text-xl"></i>
+            </button>
+          </div>
+
+          <!-- Modal Body (Scrollable) -->
+          <div class="p-5 overflow-y-auto flex-1">
+            <!-- List Pesanan -->
+            <div id="cart-items-container" class="space-y-4 mb-6">
+              <!-- Item cart di-inject JS -->
+              <div class="text-center text-slate-400 py-8">
+                Belum ada pesanan.
+              </div>
+            </div>
+
+            <!-- Form Input -->
+            <div class="space-y-4 pt-4 border-t border-slate-100">
+              <div>
+                <label
+                  for="name"
+                  class="block text-xs font-medium text-slate-500 uppercase mb-1"
+                  >Nama Pemesan</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-500 transition-all"
+                  placeholder="Masukkan nama kamu"
+                />
+              </div>
+              <div>
+                <label
+                  for="address"
+                  class="block text-xs font-medium text-slate-500 uppercase mb-1"
+                  >Alamat Pengiriman</label
+                >
+                <textarea
+                  id="address"
+                  rows="2"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-500 transition-all"
+                  placeholder="Jalan, Nomor rumah, Patokan..."
+                ></textarea>
+              </div>
+              <div
+                class="bg-yellow-50 text-yellow-800 text-xs p-3 rounded-lg flex gap-2 items-start"
+              >
+                <i class="ph-fill ph-info mt-0.5"></i>
+                <p>
+                  Pembayaran saat ini hanya tersedia via
+                  <b>COD (Bayar di Tempat)</b>.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div
+            class="p-5 border-t border-slate-100 bg-slate-50 md:rounded-b-2xl"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-slate-500">Total Pembayaran</span>
+              <span
+                class="text-xl font-bold text-coffee-800"
+                id="cart-total-display"
+                >Rp 0</span
+              >
+            </div>
+            <!-- Kembalikan tombol ini ke Pesan via WA (Karena tombol Bayar Sekarang sudah di floating btn) -->
+            <button
+              onclick="processOrder()"
+              class="w-full bg-coffee-800 hover:bg-coffee-900 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+            >
+              <span>Pesan via WhatsApp</span>
+              <i class="ph-fill ph-whatsapp-logo text-lg"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      // 1. DATA PRODUK
+      const products = [
+        { id: 1, name: "Liberica", price: 10000, img: "asset/1.png" },
+        { id: 2, name: "Robusta", price: 10000, img: "asset/2.png" },
+        { id: 3, name: "Arabica", price: 10000, img: "asset/3.jpg" },
+        { id: 4, name: "Ambachino", price: 10000, img: "asset/4.jpg" },
+        { id: 5, name: "Cold Brew", price: 10000, img: "asset/5.jpg" },
+        { id: 6, name: "Affogato", price: 10000, img: "asset/6.jpg" },
+        { id: 7, name: "Espresso", price: 10000, img: "asset/7.jpg" },
+        { id: 8, name: "Americano", price: 10000, img: "asset/8.jpg" },
+        { id: 9, name: "Latte", price: 10000, img: "asset/9.jpg" },
+        { id: 10, name: "Cappuccino", price: 10000, img: "asset/10.jpg" },
+        { id: 11, name: "Mocha", price: 10000, img: "asset/11.jpg" },
+        { id: 12, name: "Macchiato", price: 10000, img: "asset/12.jpg" },
+        { id: 13, name: "Flat White", price: 10000, img: "asset/13.jpg" },
+        { id: 14, name: "Ristretto", price: 10000, img: "asset/14.jpg" },
+        { id: 15, name: "Lungo", price: 10000, img: "asset/15.jpg" },
+      ];
+
+      // State cart
+      let cart = {};
+
+      // 2. RENDER MENU OTOMATIS
+      function renderMenu(items = products) {
+        const container = document.getElementById("menu-container");
+        const emptyState = document.getElementById("empty-state");
+        container.innerHTML = "";
+
+        if (items.length === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+          items.forEach((product) => {
+            const qty = cart[product.name] || 0;
+
+            const card = document.createElement("div");
+            card.className =
+              "bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-100 group";
+
+            card.innerHTML = `
+                        <div class="relative overflow-hidden aspect-[4/3] bg-slate-100 animate-pulse">
+                            <img 
+                                src="${product.img}" 
+                                loading="lazy"
+                                decoding="async"
+                                onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('animate-pulse', 'bg-slate-100')"
+                                onerror="this.src='https://placehold.co/300x200?text=No+Image'; this.classList.remove('opacity-0'); this.parentElement.classList.remove('animate-pulse', 'bg-slate-100')" 
+                                alt="${product.name}" 
+                                class="w-full h-full object-cover transform group-hover:scale-110 transition-all duration-700 opacity-0 ease-in-out"
+                            >
+                            ${qty > 0 ? `<div class="absolute top-2 right-2 bg-coffee-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10">${qty}x</div>` : ""}
+                        </div>
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-lg font-bold text-slate-800">${product.name}</h3>
+                            </div>
+                            
+                            <p class="text-coffee-500 font-semibold mb-4">Rp ${product.price.toLocaleString("id-ID")}</p>
+                            
+                            <!-- Kontrol Kuantitas -->
+                            <div class="flex items-center justify-between bg-slate-50 rounded-lg p-1">
+                                <button onclick="updateCart('${product.name}', -1)" class="w-8 h-8 flex items-center justify-center rounded-md bg-white text-slate-600 shadow-sm hover:bg-red-50 hover:text-red-500 transition disabled:opacity-50" ${qty === 0 ? "disabled" : ""}>
+                                    <i class="ph-bold ph-minus"></i>
+                                </button>
+                                <span class="font-bold text-slate-800 w-8 text-center" id="qty-${product.name}">${qty}</span>
+                                <button onclick="updateCart('${product.name}', 1)" class="w-8 h-8 flex items-center justify-center rounded-md bg-coffee-800 text-white shadow-sm hover:bg-coffee-900 transition">
+                                    <i class="ph-bold ph-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+            container.appendChild(card);
+          });
+        }
+      }
+
+      // 3. LOGIC KERANJANG BELANJA
+      function updateCart(productName, change) {
+        if (!cart[productName]) cart[productName] = 0;
+        cart[productName] += change;
+
+        if (cart[productName] <= 0) {
+          delete cart[productName];
+        }
+        updateUI();
+      }
+
+      function updateUI() {
+        products.forEach((p) => {
+          const qtyEl = document.getElementById(`qty-${p.name}`);
+          if (qtyEl) {
+            const qty = cart[p.name] || 0;
+            qtyEl.innerText = qty;
+            const btnMinus = qtyEl.previousElementSibling;
+            if (qty === 0) {
+              btnMinus.setAttribute("disabled", true);
+              btnMinus.classList.add("opacity-50");
+            } else {
+              btnMinus.removeAttribute("disabled");
+              btnMinus.classList.remove("opacity-50");
+            }
+          }
+        });
+
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        for (let [name, qty] of Object.entries(cart)) {
+          const product = products.find((p) => p.name === name);
+          if (product) {
+            totalItems += qty;
+            totalPrice += qty * product.price;
+          }
+        }
+
+        const badge = document.getElementById("cart-badge");
+        const floatingBtn = document.getElementById("floating-btn");
+        const floatingTotal = document.getElementById("floating-total");
+        const cartTotalDisplay = document.getElementById("cart-total-display");
+
+        if (totalItems > 0) {
+          badge.innerText = totalItems;
+          badge.classList.remove("opacity-0");
+          floatingBtn.classList.remove("translate-y-40");
+          floatingTotal.innerText = `Rp ${totalPrice.toLocaleString("id-ID")}`;
+        } else {
+          badge.classList.add("opacity-0");
+          floatingBtn.classList.add("translate-y-40");
+        }
+
+        cartTotalDisplay.innerText = `Rp ${totalPrice.toLocaleString("id-ID")}`;
+        renderCartList();
+      }
+
+      function renderCartList() {
+        const container = document.getElementById("cart-items-container");
+        container.innerHTML = "";
+
+        const entries = Object.entries(cart);
+        if (entries.length === 0) {
+          container.innerHTML =
+            '<div class="text-center text-slate-400 py-8 flex flex-col items-center"><i class="ph ph-basket text-4xl mb-2"></i><p>Keranjang masih kosong</p></div>';
+          return;
+        }
+
+        entries.forEach(([name, qty]) => {
+          const product = products.find((p) => p.name === name);
+          if (!product) return;
+
+          const itemTotal = product.price * qty;
+
+          const row = document.createElement("div");
+          row.className =
+            "flex justify-between items-center bg-slate-50 p-3 rounded-lg";
+          row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="${product.img}" onerror="this.src='https://placehold.co/50?text=No+Img'" class="w-10 h-10 rounded object-cover">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">${name}</h4>
+                            <p class="text-xs text-slate-500">${qty} x Rp ${product.price.toLocaleString("id-ID")}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-coffee-800">Rp ${itemTotal.toLocaleString("id-ID")}</p>
+                        <button onclick="updateCart('${name}', -${qty})" class="text-xs text-red-500 hover:text-red-700 underline mt-1">Hapus</button>
+                    </div>
+                `;
+          container.appendChild(row);
+        });
+      }
+
+      function toggleCart() {
+        const modal = document.getElementById("cart-modal");
+        const backdrop = document.getElementById("cart-backdrop");
+        const panel = document.getElementById("cart-panel");
+
+        if (modal.classList.contains("hidden")) {
+          modal.classList.remove("hidden");
+          setTimeout(() => {
+            backdrop.classList.remove("opacity-0");
+            panel.classList.remove("translate-y-full", "opacity-0", "scale-95");
+          }, 10);
+        } else {
+          backdrop.classList.add("opacity-0");
+          panel.classList.add("translate-y-full", "opacity-0", "scale-95");
+          setTimeout(() => {
+            modal.classList.add("hidden");
+          }, 300);
+        }
+      }
+
+      function filterMenu() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const filtered = products.filter((p) =>
+          p.name.toLowerCase().includes(query),
+        );
+        renderMenu(filtered);
+      }
+
+      function processOrder() {
+        const name = document.getElementById("name").value.trim();
+        const address = document.getElementById("address").value.trim();
+
+        if (Object.keys(cart).length === 0) {
+          alert("Keranjang belanja kosong!");
+          return;
+        }
+        if (!name || !address) {
+          alert("Mohon lengkapi Nama dan Alamat pengiriman.");
+          return;
+        }
+
+        let msg = `*Halo Toko Kopi Abadi!* 👋\nSaya ingin memesan:\n\n`;
+        let total = 0;
+
+        for (let [item, qty] of Object.entries(cart)) {
+          const product = products.find((p) => p.name === item);
+          const subtotal = product.price * qty;
+          msg += `☕ ${item} (${qty}x) - Rp ${subtotal.toLocaleString("id-ID")}\n`;
+          total += subtotal;
+        }
+
+        msg += `\n💵 *Total: Rp ${total.toLocaleString("id-ID")}*\n`;
+        msg += `\n📋 *Data Pemesan:*\nNama: ${name}\nAlamat: ${address}\nPembayaran: COD`;
+
+        const nomor = "628123456789";
+        const whatsappURL = `https://wa.me/${nomor}?text=${encodeURIComponent(msg)}`;
+
+        window.open(whatsappURL, "_blank");
+      }
+
+      renderMenu();
+    </script>
   </body>
 </html>
